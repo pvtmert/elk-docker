@@ -1,0 +1,51 @@
+
+console.enabled: true
+interpreter.enableInVisualize: true
+
+
+server:
+  port: 5601
+  host: 0.0.0.0
+  name: my-elk-kibana
+  basePath: "/kibana"
+  rewriteBasePath: false
+  maxPayloadBytes: 1048576
+
+kibana:
+  index: ".kibana"
+  defaultAppId: "home"
+
+server.ssl:
+  enabled: false
+  #certificate: /dev/null
+  #key: /dev/null
+
+elasticsearch:
+  hosts:
+    - http://search:9200
+    - http://search:9200
+  preserveHost: true
+  username: ""
+  password: ""
+  ssl:
+    #certificate: /dev/null
+    #key: /dev/null
+    #certificateAuthorities: [ ]
+    verificationMode: none
+  pingTimeout: 1500
+  requestTimeout: 30000
+  requestHeadersWhitelist:
+    - authorization
+  customHeaders: {}
+  shardTimeout: 30000
+  startupTimeout: 5000
+  logQueries: true
+pid.file: /tmp/pid
+logging:
+  json: true
+  dest: stdout
+  silent: false
+  quiet: false
+  verbose: true
+ops.interval: 5000
+i18n.locale: "en"

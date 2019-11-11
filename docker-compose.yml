@@ -1,0 +1,112 @@
+#!/usr/bin/env -S docker-compose -p elk -f
+
+version: "3.5"
+
+networks:
+  elknet:
+    driver: bridge
+    internal: false
+    external: false
+    attachable: true
+
+services:
+
+  search:
+    image: pvtmert/elk:search
+    restart: on-failure
+    command:
+      - bash
+      - -c
+      - runuser -l "$${USER}" -c "
+        $$PWD/bin/elasticsearch -v -p /tmp/pid
+        -E node.name=$$(hostname)
+        -E network.host=0.0.0.0
+        -E cluster.name=elkstack
+        -E cluster.initial_master_nodes=$$(hostname)
+        -E bootstrap.memory_lock=false"
+    privileged: false
+    stdin_open: false
+    tty: false
+    build:
+      dockerfile: search.dockerfile
+      context: ./
+      args:
+        USER: search
+        VERSION: 7.4.2
+    networks:
+      - elknet
+    volumes: []
+      #- ./elasticsearch.yml:/data/config/elasticsearch.yml:ro
+    ports: []
+      #- 9200:9200
+    deploy:
+      endpoint_mode: dnsrr
+      mode: replicated
+      replicas: 3
+      placement:
+        constraints: []
+        preferences: []
+    healthcheck:
+      test: curl -skLfm9 0:9200
+      interval: 1m
+      timeout: 10s
+      retries: 3
+
+  kibana:
+    image: pvtmert/elk:kibana
+    restart: on-failure
+    command:
+      - ./bin/kibana
+      - serve
+      - --allow-root
+      - --verbose
+      - -H 0.0.0.0
+      - -e http://search:9200
+    privileged: false
+    stdin_open: false
+    tty: false
+    build:
+      dockerfile: kibana.dockerfile
+      context: ./
+      args:
+        USER: kibana
+        VERSION: 7.4.2
+    networks:
+      - elknet
+    volumes: []
+      #- ./kibana.yml:/data/config/kibana.yml:ro
+    ports: []
+      #- 5601:5601
+    deploy:
+      endpoint_mode: dnsrr
+      mode: replicated
+      replicas: 3
+      placement:
+        constraints: []
+        preferences: []
+    healthcheck:
+      test: curl -skLfm9 0:80
+      interval: 1m
+      timeout: 10s
+      retries: 3
+
+  gateway:
+    image: nginx
+    restart: on-failure
+    #command: nginx -t
+    privileged: false
+    stdin_open: false
+    tty: false
+    networks:
+      - elknet
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - 8080:80
+    deploy:
+      endpoint_mode: dnsrr
+      mode: replicated
+      replicas: 3
+      placement:
+        constraints: []
+        preferences: []

@@ -1,0 +1,23 @@
+
+node.name: ${HOSTNAME}
+http.port: 9200
+network.host: 0.0.0.0
+bootstrap.memory_lock: false
+gateway.recover_after_nodes: 3
+#discovery.seed_hosts: [ search ]
+cluster:
+  name: my-elk-search-cluster
+  initial_master_nodes: [ search ]
+path:
+  logs: /tmp/logs
+  data:
+    - /tmp/data/0
+    - /tmp/data/1
+    - /tmp/data/2
+    - /tmp/data/3
+    - /tmp/data/4
+    - /tmp/data/5
+    - /tmp/data/6
+    - /tmp/data/7
+    - /tmp/data/8
+    - /tmp/data/9
