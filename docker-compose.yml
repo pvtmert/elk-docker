@@ -33,7 +33,7 @@ services:
     networks:
       - elknet
     volumes:
-      - ./search.yml:/data/config/elasticsearch.yml:ro
+      - ./search.yml:/home/search/config/elasticsearch.yml:ro
     ports: []
       #- 9200:9200
     deploy:
@@ -71,7 +71,7 @@ services:
     networks:
       - elknet
     volumes:
-      - ./kibana.yml:/data/config/kibana.yml:ro
+      - ./kibana.yml:/home/kibana/config/kibana.yml:ro
     ports: []
       #- 5601:5601
     deploy:
