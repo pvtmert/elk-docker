@@ -16,11 +16,5 @@ RUN export FILE="kibana-${VERSION}-$(uname -s | tr '[:upper:]' '[:lower:]')-$(un
 	curl -#L "https://artifacts.elastic.co/downloads/kibana/${FILE}" \
 	| tar --strip=1 -oxz
 
-#RUN mkdir -p data
-#RUN chown -R "${USER}:users" config data optimize
-
-#ENV USER "${USER}"
-#CMD runuser -l "${USER}" -c "$PWD/bin/kibana -vp /tmp/pid"
-
 EXPOSE 5601
 CMD ./bin/kibana serve --verbose
