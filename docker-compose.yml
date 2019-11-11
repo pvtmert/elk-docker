@@ -15,15 +15,12 @@ services:
     image: pvtmert/elk:search
     restart: on-failure
     command:
-      - bash
-      - -c
-      - runuser -l "$${USER}" -c "
-        $$PWD/bin/elasticsearch -v -p /tmp/pid
-        -E node.name=$$(hostname)
-        -E network.host=0.0.0.0
-        -E cluster.name=elkstack
-        -E cluster.initial_master_nodes=$$(hostname)
-        -E bootstrap.memory_lock=false"
+      - ./bin/elasticsearch -v -p /tmp/pid
+      - -E node.name=$$(hostname)
+      - -E network.host=0.0.0.0
+      - -E cluster.name=elkstack
+      - -E cluster.initial_master_nodes=$$(hostname)
+      - -E bootstrap.memory_lock=false
     privileged: false
     stdin_open: false
     tty: false
@@ -35,7 +32,7 @@ services:
         VERSION: 7.4.2
     networks:
       - elknet
-    volumes: []
+    volumes:
       - ./search.yml:/data/config/elasticsearch.yml:ro
     ports: []
       #- 9200:9200
@@ -73,7 +70,7 @@ services:
         VERSION: 7.4.2
     networks:
       - elknet
-    volumes: []
+    volumes:
       - ./kibana.yml:/data/config/kibana.yml:ro
     ports: []
       #- 5601:5601
@@ -91,7 +88,7 @@ services:
       retries: 3
 
   gateway:
-    image: nginx
+    image: nginx:latest
     restart: on-failure
     #command: nginx -t
     privileged: false
