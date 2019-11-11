@@ -1,7 +1,7 @@
 
 # ELK Docker: Elastic Stack in Docker
 
-#### Purpose
+### Purpose:
 
 Try to create cluster and nodes manually to implement basic stack
 
