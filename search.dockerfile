@@ -2,7 +2,7 @@
 
 #FROM centos:6
 
-FROM debian
+FROM debian:latest
 RUN apt update
 RUN apt install -y curl
 

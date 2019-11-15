@@ -7,8 +7,8 @@ server:
   port: 5601
   host: 0.0.0.0
   name: my-elk-kibana
-  basePath: "/kibana"
-  rewriteBasePath: false
+  #basePath: "/kibana"
+  #rewriteBasePath: true
   maxPayloadBytes: 1048576
 
 kibana:

@@ -4,6 +4,7 @@ version: "3.5"
 
 networks:
   elknet:
+    #name: elknet
     driver: bridge
     internal: false
     external: false
@@ -14,13 +15,16 @@ services:
   search:
     image: pvtmert/elk:search
     restart: on-failure
+    hostname: elk-search-master
     command:
-      - ./bin/elasticsearch -v -p /tmp/pid
-      - -E node.name=$$(hostname)
-      - -E network.host=0.0.0.0
-      - -E cluster.name=elkstack
-      - -E cluster.initial_master_nodes=$$(hostname)
-      - -E bootstrap.memory_lock=false
+      - ./bin/elasticsearch
+      - -v
+      - -p/tmp/pid
+      - -Enode.name=master
+      - -Enetwork.host=0.0.0.0
+      - -Ecluster.name=elkstack
+      - -Ecluster.initial_master_nodes=master
+      - -Ebootstrap.memory_lock=false
     privileged: false
     stdin_open: false
     tty: false
@@ -31,7 +35,9 @@ services:
         USER: search
         VERSION: 7.4.2
     networks:
-      - elknet
+      elknet:
+        aliases:
+          - master
     volumes:
       - ./search.yml:/home/search/config/elasticsearch.yml:ro
     ports: []
@@ -52,6 +58,7 @@ services:
   kibana:
     image: pvtmert/elk:kibana
     restart: on-failure
+    hostname: elk-kibana
     command:
       - ./bin/kibana
       - serve
